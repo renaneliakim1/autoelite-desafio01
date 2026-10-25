@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AutoElite — Loja especializada em veículos premium. Simule sua compra e encontre as melhores condições." />
+  <title>AutoElite | Veículos Premium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER / NAVBAR ===== -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar__inner">
+      <a href="#" class="navbar__brand" id="brand-link">
+        <svg class="brand-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+          <circle cx="7" cy="17" r="2"/>
+          <circle cx="17" cy="17" r="2"/>
+        </svg>
+        <span class="brand-name">Auto<span class="brand-accent">Elite</span></span>
+      </a>
+
+      <nav class="navbar__links" id="navbar-links" role="navigation" aria-label="Menu principal">
+        <a href="#produtos" class="nav-link" id="nav-products">Catálogo</a>
+        <a href="#como-funciona" class="nav-link" id="nav-how">Como Funciona</a>
+        <a href="#" class="nav-link" id="nav-simulate" onclick="event.preventDefault(); abrirCartModal();">Resumo</a>
+        <a href="#contato" class="nav-link" id="nav-contact">Contato</a>
+      </nav>
+
+      <div class="navbar__actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+          <svg class="theme-icon sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="theme-icon moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="hero">
+    <div class="container hero__content">
+      <p class="hero__eyebrow">Veículos Premium</p>
+      <h1 class="hero__title">
+        A excelência<br />
+        automotiva ao seu alcance
+      </h1>
+      <p class="hero__subtitle">
+        Seleção criteriosa de veículos de alto padrão. Condições exclusivas para clientes exigentes.
+      </p>
+      <div class="hero__ctas">
+        <a href="#produtos" class="btn btn--primary" id="hero-cta-primary">
+          <span>Ver Catálogo</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#como-funciona" class="btn btn--ghost" id="hero-cta-secondary">Como Funciona</a>
+      </div>
+      <div class="hero__stats">
+        <div class="stat">
+          <span class="stat__number">150+</span>
+          <span class="stat__label">Modelos no Catálogo</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat__number">12K+</span>
+          <span class="stat__label">Clientes Atendidos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat__number">98%</span>
+          <span class="stat__label">Satisfação</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRODUTOS ===== -->
+  <section class="section" id="produtos">
+    <div class="container">
+      <div class="section__header">
+        <p class="section__eyebrow">Nosso Catálogo</p>
+        <h2 class="section__title">Veículos <span class="brand-accent">Selecionados</span></h2>
+        <p class="section__subtitle">Modelos criteriosamente escolhidos para atender aos mais altos padrões de qualidade e desempenho.</p>
+      </div>
+
+      <div class="products-grid" id="products-grid">
+
+        <!-- Produto 1 -->
+        <article class="product-card" id="card-ferrari" data-product="ferrari">
+          <div class="product-card__badge">Mais Procurado</div>
+          <div class="product-card__visual">
+            <svg class="product-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+              <circle cx="7" cy="17" r="2"/>
+              <circle cx="17" cy="17" r="2"/>
+            </svg>
+          </div>
+          <div class="product-card__body">
+            <div class="product-card__tag">Esportivo</div>
+            <h3 class="product-card__name">Ferrari F8 Tributo</h3>
+            <p class="product-card__desc">
+              3.9L V8 biturbo com 720cv. 0–100 km/h em 2,9s. Engenharia italiana de alto desempenho.
+            </p>
+            <ul class="product-card__specs">
+              <li>720 cv</li>
+              <li>340 km/h</li>
+              <li>Gasolina</li>
+            </ul>
+            <div class="product-card__footer">
+              <div class="product-card__price">
+                <span class="price__label">A partir de</span>
+                <span class="price__value" id="price-ferrari">R$ 2.800.000</span>
+              </div>
+              <button class="btn btn--card" id="btn-add-ferrari" onclick="simularProdutoComPrompt('ferrari')" aria-label="Simular compra da Ferrari">
+                Simular compra
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Produto 2 -->
+        <article class="product-card" id="card-porsche" data-product="porsche">
+          <div class="product-card__visual">
+            <svg class="product-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+              <circle cx="7" cy="17" r="2"/>
+              <circle cx="17" cy="17" r="2"/>
+            </svg>
+          </div>
+          <div class="product-card__body">
+            <div class="product-card__tag">Executivo</div>
+            <h3 class="product-card__name">Porsche Panamera</h3>
+            <p class="product-card__desc">
+              Luxo e desempenho unidos. 4.0L V8 biturbo com 550cv, interior premium e tecnologia avançada.
+            </p>
+            <ul class="product-card__specs">
+              <li>550 cv</li>
+              <li>306 km/h</li>
+              <li>Híbrido</li>
+            </ul>
+            <div class="product-card__footer">
+              <div class="product-card__price">
+                <span class="price__label">A partir de</span>
+                <span class="price__value" id="price-porsche">R$ 1.950.000</span>
+              </div>
+              <button class="btn btn--card" id="btn-add-porsche" onclick="simularProdutoComPrompt('porsche')" aria-label="Simular compra do Porsche">
+                Simular compra
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Produto 3 -->
+        <article class="product-card" id="card-lamborghini" data-product="lamborghini">
+          <div class="product-card__badge product-card__badge--new">Lançamento</div>
+          <div class="product-card__visual">
+            <svg class="product-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+              <circle cx="7" cy="17" r="2"/>
+              <circle cx="17" cy="17" r="2"/>
+            </svg>
+          </div>
+          <div class="product-card__body">
+            <div class="product-card__tag">SUV Performance</div>
+            <h3 class="product-card__name">Lamborghini Urus</h3>
+            <p class="product-card__desc">
+              SUV de alta performance. 4.0L V8 biturbo com 650cv. Versatilidade com performance extrema.
+            </p>
+            <ul class="product-card__specs">
+              <li>650 cv</li>
+              <li>305 km/h</li>
+              <li>Gasolina</li>
+            </ul>
+            <div class="product-card__footer">
+              <div class="product-card__price">
+                <span class="price__label">A partir de</span>
+                <span class="price__value" id="price-lamborghini">R$ 2.350.000</span>
+              </div>
+              <button class="btn btn--card" id="btn-add-lamborghini" onclick="simularProdutoComPrompt('lamborghini')" aria-label="Simular compra do Lamborghini">
+                Simular compra
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Produto 4 -->
+        <article class="product-card" id="card-bentley" data-product="bentley">
+          <div class="product-card__visual">
+            <svg class="product-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+              <circle cx="7" cy="17" r="2"/>
+              <circle cx="17" cy="17" r="2"/>
+            </svg>
+          </div>
+          <div class="product-card__body">
+            <div class="product-card__tag">Ultra Luxo</div>
+            <h3 class="product-card__name">Bentley Bentayga</h3>
+            <p class="product-card__desc">
+              O ápice do luxo britânico. 6.0L W12 com 635cv, acabamento artesanal e conforto incomparável.
+            </p>
+            <ul class="product-card__specs">
+              <li>635 cv</li>
+              <li>290 km/h</li>
+              <li>Gasolina</li>
+            </ul>
+            <div class="product-card__footer">
+              <div class="product-card__price">
+                <span class="price__label">A partir de</span>
+                <span class="price__value" id="price-bentley">R$ 3.200.000</span>
+              </div>
+              <button class="btn btn--card" id="btn-add-bentley" onclick="simularProdutoComPrompt('bentley')" aria-label="Simular compra do Bentley">
+                Simular compra
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Produto 5 -->
+        <article class="product-card" id="card-mclaren" data-product="mclaren">
+          <div class="product-card__visual">
+            <svg class="product-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+              <circle cx="7" cy="17" r="2"/>
+              <circle cx="17" cy="17" r="2"/>
+            </svg>
+          </div>
+          <div class="product-card__body">
+            <div class="product-card__tag">Superesportivo</div>
+            <h3 class="product-card__name">McLaren 720S</h3>
+            <p class="product-card__desc">
+              Tecnologia derivada da F1. 4.0L V8 twin-turbo 720cv, chassi de fibra de carbono e aerodinâmica ativa.
+            </p>
+            <ul class="product-card__specs">
+              <li>720 cv</li>
+              <li>341 km/h</li>
+              <li>Gasolina</li>
+            </ul>
+            <div class="product-card__footer">
+              <div class="product-card__price">
+                <span class="price__label">A partir de</span>
+                <span class="price__value" id="price-mclaren">R$ 2.100.000</span>
+              </div>
+              <button class="btn btn--card" id="btn-add-mclaren" onclick="simularProdutoComPrompt('mclaren')" aria-label="Simular compra do McLaren">
+                Simular compra
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Produto 6 -->
+        <article class="product-card" id="card-tesla" data-product="tesla">
+          <div class="product-card__badge product-card__badge--eco">Elétrico</div>
+          <div class="product-card__visual">
+            <svg class="product-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+              <circle cx="7" cy="17" r="2"/>
+              <circle cx="17" cy="17" r="2"/>
+            </svg>
+          </div>
+          <div class="product-card__body">
+            <div class="product-card__tag">Elétrico</div>
+            <h3 class="product-card__name">Tesla Model S Plaid</h3>
+            <p class="product-card__desc">
+              Performance elétrica referência. Tri-motor 1.020cv, 0–100 em 2,1s e autonomia de 637 km.
+            </p>
+            <ul class="product-card__specs">
+              <li>1.020 cv</li>
+              <li>322 km/h</li>
+              <li>Elétrico</li>
+            </ul>
+            <div class="product-card__footer">
+              <div class="product-card__price">
+                <span class="price__label">A partir de</span>
+                <span class="price__value" id="price-tesla">R$ 890.000</span>
+              </div>
+              <button class="btn btn--card" id="btn-add-tesla" onclick="simularProdutoComPrompt('tesla')" aria-label="Simular compra do Tesla">
+                Simular compra
+              </button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FLOATING CART BUTTON ===== -->
+  <button class="floating-cart" id="floating-cart" aria-label="Ver resumo do pedido" title="Resumo do pedido (0 itens)">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9" cy="21" r="1"/>
+      <circle cx="20" cy="21" r="1"/>
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+    </svg>
+    <span class="cart-count" id="cart-count">0</span>
+    <span class="cart-label">Resumo</span>
+  </button>
+
+  <!-- ===== COMO FUNCIONA ===== -->
+  <section class="section section--alt" id="como-funciona">
+    <div class="container">
+      <div class="section__header">
+        <p class="section__eyebrow">Processo</p>
+        <h2 class="section__title">Como <span class="brand-accent">Funciona</span></h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card" id="step-1">
+          <div class="step-card__number">01</div>
+          <svg class="step-card__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+          <h3 class="step-card__title">Explore o Catálogo</h3>
+          <p class="step-card__desc">Navegue pelos modelos disponíveis e selecione os veículos de seu interesse.</p>
+        </div>
+        <div class="step-card" id="step-2">
+          <div class="step-card__number">02</div>
+          <svg class="step-card__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 9h6v6H9z"/>
+          </svg>
+          <h3 class="step-card__title">Informe Quantidades</h3>
+          <p class="step-card__desc">No simulador, defina a quantidade desejada para cada modelo selecionado.</p>
+        </div>
+        <div class="step-card" id="step-3">
+          <div class="step-card__number">03</div>
+          <svg class="step-card__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <h3 class="step-card__title">Veja o Total</h3>
+          <p class="step-card__desc">Calculamos o valor total e aplicamos descontos progressivos conforme o volume.</p>
+        </div>
+        <div class="step-card" id="step-4">
+          <div class="step-card__number">04</div>
+          <svg class="step-card__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <h3 class="step-card__title">Finalize o Pedido</h3>
+          <p class="step-card__desc">Complete seus dados e nossa equipe entrará em contato para formalizar a negociação.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTATO ===== -->
+  <section class="section section--alt" id="contato">
+    <div class="container">
+      <div class="section__header">
+        <p class="section__eyebrow">Fale Conosco</p>
+        <h2 class="section__title">Entre em <span class="brand-accent">Contato</span></h2>
+        <p class="section__subtitle">Preencha o formulário e nossa equipe retornará em até 24 horas.</p>
+      </div>
+
+      <div class="contact-wrapper">
+        <div class="contact-info">
+          <div class="contact-item" id="contact-phone">
+            <div class="contact-item__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="contact-item__label">Telefone</p>
+              <p class="contact-item__value">+55 (11) 99999-0000</p>
+            </div>
+          </div>
+          <div class="contact-item" id="contact-email">
+            <div class="contact-item__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div>
+              <p class="contact-item__label">E-mail</p>
+              <p class="contact-item__value">contato@autoelite.com.br</p>
+            </div>
+          </div>
+          <div class="contact-item" id="contact-address">
+            <div class="contact-item__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <p class="contact-item__label">Endereço</p>
+              <p class="contact-item__value">Av. Paulista, 1000 — São Paulo, SP</p>
+            </div>
+          </div>
+          <div class="contact-item" id="contact-hours">
+            <div class="contact-item__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div>
+              <p class="contact-item__label">Horário</p>
+              <p class="contact-item__value">Seg–Sex: 9h às 18h</p>
+            </div>
+          </div>
+        </div>
+
+        <form class="contact-form" id="contact-form" novalidate>
+          <div class="form-group" id="group-name">
+            <label for="contact-name" class="form-label">Nome completo *</label>
+            <input
+              type="text"
+              id="contact-name"
+              name="contact-name"
+              class="form-input"
+              placeholder="Seu nome completo"
+              autocomplete="name"
+              maxlength="100"
+            />
+            <span class="form-error" id="error-contact-name" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-group" id="group-email">
+            <label for="contact-email" class="form-label">E-mail *</label>
+            <input
+              type="email"
+              id="contact-email"
+              name="contact-email"
+              class="form-input"
+              placeholder="seu@email.com"
+              autocomplete="email"
+              maxlength="150"
+            />
+            <span class="form-error" id="error-contact-email" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-group" id="group-phone">
+            <label for="contact-phone" class="form-label">Telefone *</label>
+            <input
+              type="tel"
+              id="contact-phone"
+              name="contact-phone"
+              class="form-input"
+              placeholder="(11) 99999-9999"
+              autocomplete="tel"
+              maxlength="15"
+            />
+            <span class="form-error" id="error-contact-phone" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-group" id="group-interest">
+            <label for="contact-interest" class="form-label">Veículo de interesse *</label>
+            <select id="contact-interest" name="contact-interest" class="form-input form-select">
+              <option value="">Selecione um modelo...</option>
+              <option value="ferrari">Ferrari F8 Tributo</option>
+              <option value="porsche">Porsche Panamera</option>
+              <option value="lamborghini">Lamborghini Urus</option>
+              <option value="bentley">Bentley Bentayga</option>
+              <option value="mclaren">McLaren 720S</option>
+              <option value="tesla">Tesla Model S Plaid</option>
+              <option value="outro">Outro / Não sei ainda</option>
+            </select>
+            <span class="form-error" id="error-contact-interest" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-group form-group--full" id="group-message">
+            <label for="contact-message" class="form-label">Mensagem *</label>
+            <textarea
+              id="contact-message"
+              name="contact-message"
+              class="form-input form-textarea"
+              placeholder="Descreva seu interesse, dúvidas ou condições especiais..."
+              rows="4"
+              maxlength="1000"
+            ></textarea>
+            <div class="form-char-count">
+              <span id="char-count">0</span>/1000 caracteres
+            </div>
+            <span class="form-error" id="error-contact-message" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-group form-group--full" id="group-terms">
+            <label class="form-checkbox-label" for="contact-terms">
+              <input type="checkbox" id="contact-terms" name="contact-terms" class="form-checkbox" />
+              <span class="form-checkbox-custom"></span>
+              Concordo com os <a href="#" class="form-link" id="terms-link" onclick="abrirTermosDeUso(event)">Termos de Uso</a> e <a href="#" class="form-link" id="privacy-link" onclick="abrirPoliticaPrivacidade(event)">Política de Privacidade</a>
+            </label>
+            <span class="form-error" id="error-contact-terms" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn--primary" id="btn-contact-submit">
+              <span id="btn-submit-text">Enviar Mensagem</span>
+              <span id="btn-submit-loading" style="display:none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin" style="display:inline-block; margin-right:8px; vertical-align:middle;">
+                  <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+                  <path d="M12 2a10 10 0 0 1 10 10" stroke-opacity="1"/>
+                </svg>
+                Enviando...
+              </span>
+            </button>
+          </div>
+
+          <!-- Success / Error messages -->
+          <div class="form-feedback" id="form-feedback" style="display:none;" role="alert" aria-live="assertive"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CART SUMMARY MODAL ===== -->
+  <div class="modal-overlay" id="cart-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title" style="display:none;">
+    <div class="modal modal--cart" id="cart-modal">
+      <button class="modal-close" id="cart-modal-close" onclick="fecharCartModal()" aria-label="Fechar resumo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="modal-header">
+        <svg class="modal-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <h2 class="modal-title" id="cart-modal-title">Resumo do Pedido</h2>
+      </div>
+      <div class="modal-body" id="cart-modal-body">
+        <div class="cart-empty" id="cart-empty">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3;">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <p>Nenhum veículo selecionado.</p>
+          <span class="cart-empty-hint">Clique em "Simular compra" nos cards para adicionar.</span>
+        </div>
+        <div class="cart-items" id="cart-items" style="display:none;"></div>
+        <div class="cart-summary" id="cart-summary" style="display:none;">
+          <div class="cart-summary-row">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">R$ 0</span>
+          </div>
+          <div class="cart-summary-row cart-discount-row" id="cart-discount-row" style="display:none;">
+            <span class="discount-label">Desconto (5%) — 3+ veículos</span>
+            <span id="cart-discount" class="discount-value">- R$ 0</span>
+          </div>
+          <div class="cart-summary-row cart-total-row">
+            <span>Total</span>
+            <span id="cart-total">R$ 0</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--primary btn--full" id="btn-cart-simulate" onclick="simularCompra()">Simular Compra</button>
+        <button class="btn btn--ghost btn--full" id="btn-cart-finalize" onclick="irParaContatoDoCart()">Finalizar Pedido</button>
+        <button class="btn btn--ghost btn--full" id="btn-cart-clear" onclick="limparCarrinho()">Limpar Carrinho</button>
+        <button class="btn btn--ghost btn--full" id="btn-cart-close" onclick="fecharCartModal()">Continuar Comprando</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DE RESULTADO ===== -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display:none;">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modal-close" onclick="fecharModal()" aria-label="Fechar modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="modal-header">
+        <svg class="modal-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <h2 class="modal-title" id="modal-title">Resumo da Compra</h2>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn--primary" id="btn-modal-contact" onclick="irParaContato()">Entrar em Contato</button>
+        <button class="btn btn--ghost" id="btn-modal-close" onclick="fecharModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST NOTIFICATIONS ===== -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- ===== CUSTOM ALERT MODAL ===== -->
+  <div class="modal-overlay" id="custom-alert-overlay" role="dialog" aria-modal="true" aria-labelledby="custom-alert-title" style="display:none;">
+    <div class="modal modal--alert" id="custom-alert-modal">
+      <div class="modal-header">
+        <svg class="modal-icon" id="custom-alert-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <h2 class="modal-title" id="custom-alert-title">AutoElite</h2>
+      </div>
+      <div class="modal-body" id="custom-alert-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn--primary btn--full" id="custom-alert-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CUSTOM PROMPT MODAL ===== -->
+  <div class="modal-overlay" id="custom-prompt-overlay" role="dialog" aria-modal="true" aria-labelledby="custom-prompt-title" style="display:none;">
+    <div class="modal modal--prompt" id="custom-prompt-modal">
+      <div class="modal-header">
+        <svg class="modal-icon" id="custom-prompt-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+        <h2 class="modal-title" id="custom-prompt-title">Quantidade</h2>
+      </div>
+      <div class="modal-body" id="custom-prompt-body">
+        <p id="custom-prompt-message"></p>
+        <div class="prompt-input-wrapper">
+          <input type="number" id="custom-prompt-input" class="form-input" min="0" max="10" step="1" placeholder="0">
+        </div>
+        <p class="prompt-hint" id="custom-prompt-hint"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--ghost btn--full" id="custom-prompt-cancel">Cancelar</button>
+        <button class="btn btn--primary btn--full" id="custom-prompt-confirm">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <svg class="brand-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+          <circle cx="7" cy="17" r="2"/>
+          <circle cx="17" cy="17" r="2"/>
+        </svg>
+        <span class="brand-name">Auto<span class="brand-accent">Elite</span></span>
+        <p class="footer__tagline">Excelência em veículos premium.</p>
+      </div>
+      <div class="footer__links">
+        <div class="footer__col">
+          <h4 class="footer__col-title">Navegação</h4>
+          <a href="#produtos" class="footer__link">Catálogo</a>
+          <a href="#como-funciona" class="footer__link">Como Funciona</a>
+          <a href="#" class="footer__link" onclick="abrirCartModal()">Resumo do Pedido</a>
+          <a href="#contato" class="footer__link">Contato</a>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__col-title">Veículos</h4>
+          <a href="#card-ferrari" class="footer__link">Ferrari F8</a>
+          <a href="#card-porsche" class="footer__link">Porsche Panamera</a>
+          <a href="#card-lamborghini" class="footer__link">Lamborghini Urus</a>
+          <a href="#card-tesla" class="footer__link">Tesla Plaid</a>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__col-title">Legal</h4>
+          <a href="#" class="footer__link" id="footer-terms-link" onclick="abrirTermosDeUso(event)">Termos de Uso</a>
+          <a href="#" class="footer__link" id="footer-privacy-link" onclick="abrirPoliticaPrivacidade(event)">Privacidade</a>
+          <a href="#" class="footer__link" id="footer-cookies-link" onclick="abrirPoliticaCookies(event)">Cookies</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© 2026 AutoElite. Todos os direitos reservados. | Projeto desenvolvido por <strong>Renã Eliakim</strong> — Trilha de Desenvolvimento Mobile</p>
+        <p class="footer__disclaimer">Esta é uma loja fictícia criada para fins educacionais.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
