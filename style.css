@@ -1389,6 +1389,14 @@ button, input, textarea, select {
   position: relative;
   animation: modalIn 0.3s ease;
   box-shadow: var(--shadow-xl);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.modal::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .modal-close {
@@ -1488,12 +1496,15 @@ button, input, textarea, select {
 
 /* ===== CUSTOM ALERT MODAL ===== */
 .modal--alert {
-  max-width: 420px;
+  max-width: 480px;
+  overflow: hidden;
+  padding: var(--space-6) var(--space-8);
 }
 
 .modal--alert .modal-icon {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-3);
 }
 
 .modal--alert .modal-icon.info { color: var(--color-accent); }
@@ -1504,15 +1515,19 @@ button, input, textarea, select {
 .modal--alert .modal-body {
   text-align: center;
   padding: var(--space-2) 0;
+  overflow: hidden;
 }
 
 .modal--alert .modal-body p {
   white-space: pre-line;
-  line-height: 1.7;
+  line-height: 1.55;
+  font-size: var(--font-size-sm);
 }
 
 .modal--alert .modal-footer {
   justify-content: center;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
 }
 
 /* ===== CUSTOM PROMPT MODAL ===== */

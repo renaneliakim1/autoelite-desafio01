@@ -655,6 +655,9 @@ async function simularCompra() {
       return;
     }
 
+    // Fecha o modal do carrinho para exibir o resumo do pedido
+    fecharCartModal();
+
     const itens = Object.entries(carrinho.itens).map(([id, item]) => ({
       nome: item.nome,
       qtd: item.qtd,
@@ -671,20 +674,18 @@ async function simularCompra() {
     // Monta mensagem resumida (requisito: alert com itens e total)
     let mensagemAlert = '';
     itens.forEach(item => {
-      mensagemAlert += `🚗 ${item.nome}\n`;
-      mensagemAlert += `   ${item.qtd} unid. × ${formatarMoeda(item.preco)} = ${formatarMoeda(item.valor)}\n\n`;
+      mensagemAlert += `🏎️ ${item.nome} (${item.qtd}x) — ${formatarMoeda(item.valor)}\n`;
     });
 
-    mensagemAlert += '────────────────────────────────────\n';
+    mensagemAlert += '─────────────────────────────\n';
     if (temDesconto) {
       mensagemAlert += `Subtotal: ${formatarMoeda(subtotal)}\n`;
       mensagemAlert += `Desconto (5%): -${formatarMoeda(valorDesconto)}\n`;
-      mensagemAlert += '────────────────────────────────────\n';
+      mensagemAlert += '─────────────────────────────\n';
     }
     mensagemAlert += `TOTAL: ${formatarMoeda(total)}\n\n`;
-    if (temDesconto) mensagemAlert += '🎁 Desconto progressivo aplicado!\n\n';
-    mensagemAlert += 'Nossa equipe entrará em contato em breve!\n\n';
-    mensagemAlert += 'Obrigado por escolher a AutoElite!';
+    if (temDesconto) mensagemAlert += '🎁 Desconto de 5% aplicado!\n';
+    mensagemAlert += 'Nossa equipe entrará em contato em breve.';
 
     // Exibe alert (conforme requisito do desafio)
     await mostrarCustomAlert(mensagemAlert, 'success', 'Resumo da Compra');
@@ -1080,12 +1081,12 @@ function limparCarrinho() {
   exibirToast('Pedido limpo.', 'info', 2000);
 }
 
+function finalizarPedido() {
+  simularCompra();
+}
+
 function irParaContatoDoCart() {
-  fecharCartModal();
-  setTimeout(() => {
-    document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' });
-    document.getElementById('contact-name')?.focus();
-  }, 200);
+  finalizarPedido();
 }
 
 // Fechar cart modal clicando no overlay
