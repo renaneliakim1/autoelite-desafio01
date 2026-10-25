@@ -59,14 +59,16 @@ const QTD_MAX = 10;
    ======================================================== */
 
 const carrinho = {
-  itens: {}, // { id: { qtd, preco, nome } }
+  itens: Object.create(null), // { id: { qtd, preco, nome } }
   
   adicionar(id, qtd) {
+    if (!Object.prototype.hasOwnProperty.call(PRODUTOS, id)) return false;
     const produto = PRODUTOS[id];
-    if (!produto) return false;
-    
-    const qtdNumerica = Math.max(1, Math.min(QTD_MAX, Number(qtd) || 0));
-    if (qtdNumerica <= 0) return false;
+
+    const qtdInformada = Math.floor(Number(qtd));
+    if (!Number.isFinite(qtdInformada) || qtdInformada < 1) return false;
+
+    const qtdNumerica = Math.min(QTD_MAX, qtdInformada);
     
     if (this.itens[id]) {
       this.itens[id].qtd += qtdNumerica;
@@ -91,7 +93,7 @@ const carrinho = {
   },
   
   limpar() {
-    this.itens = {};
+    this.itens = Object.create(null);
     this.atualizarUI();
   },
   
@@ -174,7 +176,7 @@ const carrinho = {
       div.innerHTML = `
         <div class="cart-item-icon" style="overflow: hidden; padding: 0;">
           ${PRODUTOS[id]?.imagem 
-            ? `<img src="${PRODUTOS[id].imagem}" alt="${item.nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md);" />`
+            ? `<img src="${escaparHTML(PRODUTOS[id].imagem)}" alt="${escaparHTML(item.nome)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md);" />`
             : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
                 <circle cx="7" cy="17" r="2"/>
@@ -182,9 +184,9 @@ const carrinho = {
               </svg>`}
         </div>
         <div class="cart-item-details">
-          <div class="cart-item-name">${item.nome}</div>
+          <div class="cart-item-name">${escaparHTML(item.nome)}</div>
           <div class="cart-item-qty-price">
-            <span class="cart-item-qty">${item.qtd} unid.</span>
+            <span class="cart-item-qty">${escaparHTML(item.qtd)} unid.</span>
             <span class="cart-item-divider">×</span>
             <span class="cart-item-unit-price">${formatarMoeda(item.preco)}</span>
           </div>
@@ -211,12 +213,40 @@ const carrinho = {
    ======================================================== */
 
 /**
+ * Escapa caracteres especiais para inserção segura em HTML.
+ * @param {*} valor
+ * @returns {string}
+ */
+function escaparHTML(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
+ * Remove caracteres de controle e normaliza espaços de entradas de texto.
+ * @param {*} valor
+ * @param {boolean} permitirQuebraLinha
+ * @returns {string}
+ */
+function sanitizarTexto(valor, permitirQuebraLinha = false) {
+  const caracteresControle = permitirQuebraLinha
+    ? /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g
+    : /[\u0000-\u001F\u007F]/g;
+  return String(valor ?? '').replace(caracteresControle, '').trim();
+}
+
+/**
  * Formata um número como moeda BRL.
  * @param {number} valor
  * @returns {string}
  */
 function formatarMoeda(valor) {
-  return valor.toLocaleString('pt-BR', {
+  const numero = Number.isFinite(Number(valor)) ? Number(valor) : 0;
+  return numero.toLocaleString('pt-BR', {
     style: 'currency',
     currency: 'BRL',
     minimumFractionDigits: 0,
@@ -246,7 +276,7 @@ function exibirToast(mensagem, tipo = 'info', duracao = 3500) {
   toast.setAttribute('role', 'status');
   toast.innerHTML = `
     <span class="toast__icon">${iconesSvg[tipo] || iconesSvg.info}</span>
-    <span class="toast__msg">${mensagem}</span>
+    <span class="toast__msg">${escaparHTML(mensagem)}</span>
   `;
 
   container.appendChild(toast);
@@ -271,7 +301,7 @@ function exibirToast(mensagem, tipo = 'info', duracao = 3500) {
 (function inicializarTema() {
   const temaSalvo = localStorage.getItem('autoelite-tema');
   const temaPreferido = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  const tema = temaSalvo || temaPreferido;
+  const tema = (temaSalvo === 'light' || temaSalvo === 'dark') ? temaSalvo : temaPreferido;
   document.documentElement.setAttribute('data-theme', tema);
   atualizarIconeTema(tema);
 })();
@@ -393,7 +423,7 @@ function alterarQtd(id, delta) {
 function validarInput(input) {
   const id = input.id.replace('qty-', '');
   const errorEl = document.getElementById(`error-${id}`);
-  let val = input.value.trim();
+  let val = sanitizarTexto(input.value);
   let erro = '';
 
   // Campo obrigatório (pode ser 0)
@@ -414,7 +444,6 @@ function validarInput(input) {
   if (errorEl) errorEl.textContent = erro;
   input.classList.toggle('error', erro !== '');
 
-  atualizarPreview();
   return erro === '';
 }
 
@@ -479,8 +508,8 @@ function atualizarPreview() {
   itens.forEach(item => {
     const li = document.createElement('li');
     li.innerHTML = `
-      <span class="item-name">${item.nome}</span>
-      <span class="item-qty">× ${item.qtd}</span>
+      <span class="item-name">${escaparHTML(item.nome)}</span>
+      <span class="item-qty">× ${escaparHTML(item.qtd)}</span>
       <span class="item-value">${formatarMoeda(item.valor)}</span>
     `;
     previewList.appendChild(li);
@@ -542,9 +571,10 @@ async function simularComPrompt() {
       continue;
     }
 
-    if (isNaN(qtd) || qtd < 0) {
+    if (!Number.isFinite(qtd) || !Number.isInteger(qtd) || qtd < 0 || qtd > QTD_MAX) {
       await mostrarCustomAlert(
-        `O valor informado para "${produto.nome}" não é um número válido.\n\n` +
+        `O valor informado para "${produto.nome}" não é válido.\n\n` +
+        `Use um número inteiro entre 0 e ${QTD_MAX}.\n` +
         `Consideraremos 0 unidade(s) para este modelo.`,
         'warning',
         'Entrada Inválida'
@@ -592,8 +622,8 @@ async function simularComPrompt() {
  * @param {string} id - ID do produto
  */
 async function simularProdutoComPrompt(id) {
+  if (!Object.prototype.hasOwnProperty.call(PRODUTOS, id)) return;
   const produto = PRODUTOS[id];
-  if (!produto) return;
 
   const precoStr = formatarMoeda(produto.preco);
   const qtd = await mostrarCustomPrompt(
@@ -611,9 +641,10 @@ async function simularProdutoComPrompt(id) {
     return;
   }
 
-  if (isNaN(qtd) || qtd < 0) {
+  if (!Number.isFinite(qtd) || !Number.isInteger(qtd) || qtd < 0 || qtd > QTD_MAX) {
     await mostrarCustomAlert(
-      `O valor informado não é um número válido.\n\n` +
+      `O valor informado não é válido.\n\n` +
+      `Use um número inteiro entre 0 e ${QTD_MAX}.\n` +
       `Consideraremos 0 unidade(s) para ${produto.nome}.`,
       'warning',
       'Entrada Inválida'
@@ -713,6 +744,7 @@ function adicionarAoSimulador(id) {
       val += 1;
       input.value = val;
       validarInput(input);
+      atualizarPreview();
       const produto = PRODUTOS[id];
       if (produto) {
         exibirToast(`${produto.nome} adicionado ao simulador!`, 'success');
@@ -762,7 +794,7 @@ function exibirModal(itens, subtotal, total, valorDesconto, temDesconto) {
   itens.forEach(item => {
     html += `
       <div class="modal-item">
-        <span class="modal-item-name">${item.nome} × ${item.qtd}</span>
+        <span class="modal-item-name">${escaparHTML(item.nome)} × ${escaparHTML(item.qtd)}</span>
         <span class="modal-item-value">${formatarMoeda(item.valor)}</span>
       </div>
     `;
@@ -845,7 +877,7 @@ function mostrarCustomAlert(mensagem, tipo = 'info', titulo = '') {
 
     if (icon) icon.innerHTML = icons[tipo] || icons.info;
     if (title) title.textContent = titulo || titles[tipo] || 'AutoElite';
-    if (body) body.innerHTML = `<p>${mensagem.replace(/\n/g, '<br>')}</p>`;
+    if (body) body.innerHTML = `<p>${escaparHTML(mensagem).replace(/\n/g, '<br>')}</p>`;
 
     // Função para fechar
     const fechar = () => {
@@ -941,12 +973,12 @@ function mostrarCustomPrompt(mensagem, hint = '', valorPadrao = 0, titulo = 'Qua
 
     if (icon && iconSvg) icon.innerHTML = iconSvg;
     if (title) title.textContent = titulo;
-    if (msgEl) msgEl.innerHTML = mensagem.replace(/\n/g, '<br>');
+    if (msgEl) msgEl.innerHTML = escaparHTML(mensagem).replace(/\n/g, '<br>');
     if (hintEl) hintEl.textContent = hint;
     if (input) {
       input.value = valorPadrao;
       input.min = 0;
-      input.max = 10;
+      input.max = QTD_MAX;
     }
 
     const fechar = (valor) => {
@@ -961,8 +993,18 @@ function mostrarCustomPrompt(mensagem, hint = '', valorPadrao = 0, titulo = 'Qua
 
     const onCancel = () => fechar(null);
     const onConfirm = () => {
-      const val = Number(input.value);
-      fechar(isNaN(val) ? 0 : val);
+      if (!input) { fechar(null); return; }
+
+      let val = Number(input.value);
+      if (!Number.isFinite(val)) val = 0;
+      val = Math.floor(val);
+
+      const min = Number(input.min);
+      const max = Number(input.max);
+      if (Number.isFinite(min)) val = Math.max(min, val);
+      if (Number.isFinite(max)) val = Math.min(max, val);
+
+      fechar(val);
     };
 
     const overlayClick = (e) => {
@@ -1115,9 +1157,11 @@ const VALIDACOES_CONTATO = {
   },
   'contact-email': {
     required: true,
-    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+    maxLength: 150,
+    pattern: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/,
     mensagens: {
       required: 'Por favor, informe seu e-mail.',
+      maxLength: 'O e-mail não pode ter mais de 150 caracteres.',
       pattern: 'Informe um e-mail válido (ex: nome@email.com).',
     },
   },
@@ -1131,8 +1175,10 @@ const VALIDACOES_CONTATO = {
   },
   'contact-interest': {
     required: true,
+    opcoes: ['ferrari', 'porsche', 'lamborghini', 'bentley', 'mclaren', 'tesla', 'outro'],
     mensagens: {
       required: 'Por favor, selecione um veículo de interesse.',
+      opcoes: 'Selecione uma opção válida da lista.',
     },
   },
   'contact-message': {
@@ -1159,7 +1205,7 @@ function validarCampoContato(campoId) {
 
   if (!campo || !regras) return true;
 
-  const valor = campo.value.trim();
+  const valor = sanitizarTexto(campo.value, campo.tagName === 'TEXTAREA');
   let erro = '';
 
   if (regras.required && valor === '') {
@@ -1169,6 +1215,8 @@ function validarCampoContato(campoId) {
       erro = regras.mensagens.minLength;
     } else if (regras.maxLength && valor.length > regras.maxLength) {
       erro = regras.mensagens.maxLength;
+    } else if (regras.opcoes && !regras.opcoes.includes(valor)) {
+      erro = regras.mensagens.opcoes;
     } else if (regras.pattern && !regras.pattern.test(valor)) {
       erro = regras.mensagens.pattern;
     }
@@ -1227,10 +1275,11 @@ function inicializarFormularioContato() {
     campo.addEventListener('input', () => {
       // Limpa erro ao começar a digitar
       const errorEl = document.getElementById(`error-${campoId}`);
-      if (campo.classList.contains('error') && campo.value.trim() !== '') {
+      const valorAtual = sanitizarTexto(campo.value, campo.tagName === 'TEXTAREA');
+      if (campo.classList.contains('error') && valorAtual !== '') {
         validarCampoContato(campoId);
       }
-      if (campo.value.trim() === '' && errorEl) {
+      if (valorAtual === '' && errorEl) {
         errorEl.textContent = '';
         campo.classList.remove('error', 'success');
       }
@@ -1294,6 +1343,13 @@ function enviarFormularioContato() {
       return;
     }
 
+    // Normaliza os valores antes do envio (remove caracteres de controle e espaços extras)
+    Object.keys(VALIDACOES_CONTATO).forEach(campoId => {
+      const campo = document.getElementById(campoId);
+      if (!campo) return;
+      campo.value = sanitizarTexto(campo.value, campo.tagName === 'TEXTAREA');
+    });
+
     // Simula envio (loading state)
     const btnText = document.getElementById('btn-submit-text');
     const btnLoading = document.getElementById('btn-submit-loading');
@@ -1314,7 +1370,7 @@ function enviarFormularioContato() {
       if (feedback) {
         feedback.style.display = 'block';
         feedback.className = 'form-feedback success';
-        feedback.innerHTML = 'Mensagem enviada com sucesso! Nossa equipe retornará em até 24 horas.';
+        feedback.textContent = 'Mensagem enviada com sucesso! Nossa equipe retornará em até 24 horas.';
 
         // Esconde após 6s
         setTimeout(() => { feedback.style.display = 'none'; }, 6000);
