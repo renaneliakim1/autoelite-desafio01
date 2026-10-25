@@ -21,26 +21,32 @@ const PRODUTOS = {
   ferrari: {
     nome: 'Ferrari F8 Tributo',
     preco: 2800000,
+    imagem: 'Ferrari F8 Tributo.jpg',
   },
   porsche: {
     nome: 'Porsche Panamera',
     preco: 1950000,
+    imagem: 'Porsche Panamera.jpg',
   },
   lamborghini: {
     nome: 'Lamborghini Urus',
     preco: 2350000,
+    imagem: 'Lamborghini Urus.webp',
   },
   bentley: {
     nome: 'Bentley Bentayga',
     preco: 3200000,
+    imagem: 'Bentley Bentayga.webp',
   },
   mclaren: {
     nome: 'McLaren 720S',
     preco: 2100000,
+    imagem: 'McLaren 720S.jpg',
   },
   tesla: {
     nome: 'Tesla Model S Plaid',
     preco: 890000,
+    imagem: 'Tesla Model S Plaid.jpg',
   },
 };
 
@@ -166,12 +172,14 @@ const carrinho = {
       const div = document.createElement('div');
       div.className = 'cart-item';
       div.innerHTML = `
-        <div class="cart-item-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
-            <circle cx="7" cy="17" r="2"/>
-            <circle cx="17" cy="17" r="2"/>
-          </svg>
+        <div class="cart-item-icon" style="overflow: hidden; padding: 0;">
+          ${PRODUTOS[id]?.imagem 
+            ? `<img src="${PRODUTOS[id].imagem}" alt="${item.nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md);" />`
+            : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+                <circle cx="7" cy="17" r="2"/>
+                <circle cx="17" cy="17" r="2"/>
+              </svg>`}
         </div>
         <div class="cart-item-details">
           <div class="cart-item-name">${item.nome}</div>
