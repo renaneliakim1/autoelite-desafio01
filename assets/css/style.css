@@ -502,18 +502,18 @@ button, input, textarea, select {
   justify-content: center;
   position: relative;
   padding-top: 72px;
-  background-image: linear-gradient(180deg, rgba(15, 15, 26, 0.72) 0%, rgba(15, 15, 26, 0.88) 100%), url('mcdz.jpg');
+  background-image: linear-gradient(180deg, rgba(15, 15, 26, 0.72) 0%, rgba(15, 15, 26, 0.88) 100%), url('../img/hero.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 [data-theme="dark"] .hero {
-  background-image: linear-gradient(180deg, rgba(15, 15, 26, 0.72) 0%, rgba(15, 15, 26, 0.88) 100%), url('mcdz.jpg');
+  background-image: linear-gradient(180deg, rgba(15, 15, 26, 0.72) 0%, rgba(15, 15, 26, 0.88) 100%), url('../img/hero.jpg');
 }
 
 [data-theme="light"] .hero {
-  background-image: linear-gradient(180deg, rgba(250, 250, 250, 0.82) 0%, rgba(250, 250, 250, 0.92) 100%), url('mcdz.jpg');
+  background-image: linear-gradient(180deg, rgba(250, 250, 250, 0.82) 0%, rgba(250, 250, 250, 0.92) 100%), url('../img/hero.jpg');
 }
 
 .hero__content {

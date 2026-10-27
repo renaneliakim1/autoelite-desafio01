@@ -21,32 +21,32 @@ const PRODUTOS = {
   ferrari: {
     nome: 'Ferrari F8 Tributo',
     preco: 2800000,
-    imagem: 'Ferrari F8 Tributo.jpg',
+    imagem: 'assets/img/ferrari-f8-tributo.jpg',
   },
   porsche: {
     nome: 'Porsche Panamera',
     preco: 1950000,
-    imagem: 'Porsche Panamera.jpg',
+    imagem: 'assets/img/porsche-panamera.jpg',
   },
   lamborghini: {
     nome: 'Lamborghini Urus',
     preco: 2350000,
-    imagem: 'Lamborghini Urus.webp',
+    imagem: 'assets/img/lamborghini-urus.webp',
   },
   bentley: {
     nome: 'Bentley Bentayga',
     preco: 3200000,
-    imagem: 'Bentley Bentayga.webp',
+    imagem: 'assets/img/bentley-bentayga.webp',
   },
   mclaren: {
     nome: 'McLaren 720S',
     preco: 2100000,
-    imagem: 'McLaren 720S.jpg',
+    imagem: 'assets/img/mclaren-720s.jpg',
   },
   tesla: {
     nome: 'Tesla Model S Plaid',
     preco: 890000,
-    imagem: 'Tesla Model S Plaid.jpg',
+    imagem: 'assets/img/tesla-model-s-plaid.jpg',
   },
 };
 
