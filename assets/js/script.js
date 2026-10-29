@@ -68,18 +68,13 @@ const carrinho = {
     const qtdInformada = Math.floor(Number(qtd));
     if (!Number.isFinite(qtdInformada) || qtdInformada < 1) return false;
 
-    const qtdNumerica = Math.min(QTD_MAX, qtdInformada);
-    
     if (this.itens[id]) {
-      this.itens[id].qtd += qtdNumerica;
-      if (this.itens[id].qtd > QTD_MAX) {
-        this.itens[id].qtd = QTD_MAX;
-      }
+      this.itens[id].qtd += qtdInformada;
     } else {
       this.itens[id] = {
         nome: produto.nome,
         preco: produto.preco,
-        qtd: qtdNumerica
+        qtd: qtdInformada
       };
     }
     
@@ -299,7 +294,14 @@ function exibirToast(mensagem, tipo = 'info', duracao = 3500) {
    ======================================================== */
 
 (function inicializarTema() {
-  const temaSalvo = localStorage.getItem('autoelite-tema');
+  let temaSalvo = null;
+
+  try {
+    temaSalvo = localStorage.getItem('autoelite-tema');
+  } catch (erro) {
+    temaSalvo = null;
+  }
+
   const temaPreferido = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
   const tema = (temaSalvo === 'light' || temaSalvo === 'dark') ? temaSalvo : temaPreferido;
   document.documentElement.setAttribute('data-theme', tema);
@@ -311,7 +313,13 @@ function alternarTema() {
   const temaAtual = html.getAttribute('data-theme');
   const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', novoTema);
-  localStorage.setItem('autoelite-tema', novoTema);
+
+  try {
+    localStorage.setItem('autoelite-tema', novoTema);
+  } catch (erro) {
+    // Armazenamento indisponível: o tema continua funcionando na sessão atual
+  }
+
   atualizarIconeTema(novoTema);
   exibirToast(
     novoTema === 'dark' ? 'Tema escuro ativado' : 'Tema claro ativado',
@@ -527,207 +535,93 @@ function atualizarPreview() {
 }
 
 /**
- * Simulação com prompt() / Number() / alert() — Requisito do Desafio
- * Pergunta quantidade de cada produto via prompt, converte com Number(),
- * calcula preço × quantidade, exibe resultado com alert().
+ * Simula a compra de um único veículo escolhido pelo usuário.
+ * Usa o modal customizado para perguntar a quantidade e para exibir o resultado.
+ * @param {string} id - chave do produto em PRODUTOS
  */
-async function simularComPrompt() {
-  const produtos = [
-    { id: 'ferrari', nome: 'Ferrari F8 Tributo', preco: 2800000 },
-    { id: 'porsche', nome: 'Porsche Panamera', preco: 1950000 },
-    { id: 'lamborghini', nome: 'Lamborghini Urus', preco: 2350000 },
-    { id: 'bentley', nome: 'Bentley Bentayga', preco: 3200000 },
-    { id: 'mclaren', nome: 'McLaren 720S', preco: 2100000 },
-    { id: 'tesla', nome: 'Tesla Model S Plaid', preco: 890000 },
-  ];
-
-  let total = 0;
-  let itensSelecionados = [];
-  let algumSelecionado = false;
-
-  await mostrarCustomAlert(
-    'Bem-vindo ao simulador oficial!\n\n' +
-    'Vamos configurar seu pedido ideal.\n' +
-    'Para cada veículo, digite a quantidade desejada.\n\n' +
-    'Digite 0 para pular o modelo.',
-    'info',
-    'AUTOELITE — SIMULADOR'
-  );
-
-  for (const produto of produtos) {
-    const precoStr = formatarMoeda(produto.preco);
-    const qtd = await mostrarCustomPrompt(
-      `🏎️  ${produto.nome}\n\n` +
-      `💰 Preço unitário: ${precoStr}\n\n` +
-      `📦 Quantas unidades deseja?`,
-      '0 para não incluir',
-      0,
-      'Quantidade',
-      `<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>`
-    );
-
-    if (qtd === null) {
-      // Usuário cancelou - pular este modelo
-      continue;
-    }
-
-    if (!Number.isFinite(qtd) || !Number.isInteger(qtd) || qtd < 0 || qtd > QTD_MAX) {
-      await mostrarCustomAlert(
-        `O valor informado para "${produto.nome}" não é válido.\n\n` +
-        `Use um número inteiro entre 0 e ${QTD_MAX}.\n` +
-        `Consideraremos 0 unidade(s) para este modelo.`,
-        'warning',
-        'Entrada Inválida'
-      );
-      continue;
-    }
-
-    if (qtd > 0) {
-      algumSelecionado = true;
-      const valor = qtd * produto.preco;
-      total += valor;
-      itensSelecionados.push({ nome: produto.nome, qtd, valor, preco: produto.preco });
-    }
-  }
-
-  if (!algumSelecionado) {
-    await mostrarCustomAlert(
-      'Nenhum veículo foi selecionado.\n\n' +
-      'Seu pedido não foi gerado.\n' +
-      'Estamos à disposição quando quiser simular uma compra!',
-      'info',
-      'Pedido Vazio'
-    );
-    return;
-  }
-
-  // Monta resumo personalizado
-  let mensagem = '';
-  itensSelecionados.forEach(item => {
-    mensagem += `🚗 ${item.nome}\n`;
-    mensagem += `   ${item.qtd} unid. × ${formatarMoeda(item.preco)} = ${formatarMoeda(item.valor)}\n\n`;
-  });
-
-  mensagem += `────────────────────────────────────\n`;
-  mensagem += `TOTAL DO PEDIDO: ${formatarMoeda(total)}\n\n`;
-  mensagem += '✅ Simulação concluída com sucesso!\n\n';
-  mensagem += 'Nossa equipe comercial entrará em contato\npara finalizar os detalhes e condições de pagamento.\n\n';
-  mensagem += 'Obrigado por escolher a AutoElite!';
-
-  await mostrarCustomAlert(mensagem, 'success', 'Resumo do Pedido');
-}
-
-/**
- * Adiciona veículo ao carrinho via prompt() — Para uso nos cards
- * @param {string} id - ID do produto
- */
-async function simularProdutoComPrompt(id) {
-  if (!Object.prototype.hasOwnProperty.call(PRODUTOS, id)) return;
+async function simularProduto(id) {
   const produto = PRODUTOS[id];
+  if (!produto) return;
 
-  const precoStr = formatarMoeda(produto.preco);
-  const qtd = await mostrarCustomPrompt(
-    `🏎️  ${produto.nome}\n\n` +
-    `💰 Preço unitário: ${precoStr}\n\n` +
-    `📦 Quantas unidades deseja adicionar?`,
-    '0 para cancelar',
+  const quantidade = await mostrarCustomPrompt(
+    `Quantas unidades de ${produto.nome} você deseja?`,
+    `Preço unitário: ${formatarMoeda(produto.preco)} · 0 para não comprar`,
     0,
-    'Quantidade',
-    `<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>`
+    'Simular compra',
+    '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>'
   );
 
-  if (qtd === null) {
-    // Usuário cancelou
+  if (quantidade === null) return;
+
+  if (!Number.isInteger(quantidade) || quantidade < 0) {
+    await mostrarCustomAlert('Informe uma quantidade inteira válida.', 'warning', 'Entrada inválida');
     return;
   }
 
-  if (!Number.isFinite(qtd) || !Number.isInteger(qtd) || qtd < 0 || qtd > QTD_MAX) {
+  if (quantidade === 0) {
     await mostrarCustomAlert(
-      `O valor informado não é válido.\n\n` +
-      `Use um número inteiro entre 0 e ${QTD_MAX}.\n` +
-      `Consideraremos 0 unidade(s) para ${produto.nome}.`,
-      'warning',
-      'Entrada Inválida'
+      `Nenhuma unidade de ${produto.nome} foi selecionada.`,
+      'info',
+      'Nada selecionado'
     );
     return;
   }
 
-  if (qtd === 0) {
-    return;
-  }
+  carrinho.adicionar(id, quantidade);
 
-  const adicionado = carrinho.adicionar(id, qtd);
-  
-  if (adicionado) {
-    exibirToast(`${qtd}× ${produto.nome} adicionado ao pedido!`, 'success');
-    abrirCartModal();
-  } else {
-    exibirToast('Não foi possível adicionar ao pedido.', 'error');
-  }
+  const valor = produto.preco * quantidade;
+  await mostrarCustomAlert(
+    `${produto.nome}\n\n` +
+    `Quantidade: ${quantidade}\n` +
+    `Valor: ${formatarMoeda(valor)}\n\n` +
+    `Total do pedido: ${formatarMoeda(carrinho.getTotal())}`,
+    'success',
+    'Produto adicionado'
+  );
+
+  abrirCartModal();
 }
 
 /**
- * Simula a compra — valida, calcula e exibe modal.
- * Correspondente ao requisito: prompt() / Number() / alert()
- * (Implementado com modal customizado para melhor UX,
- *  mantendo compatibilidade com o conceito exigido)
+ * Exibe o resumo final do pedido montado no carrinho.
  */
 async function simularCompra() {
-  try {
-    // Usa dados do carrinho em vez do simulador antigo
-    if (!carrinho.temItens()) {
-      exibirToast('Nenhum veículo foi selecionado. Informe ao menos 1 veículo.', 'warning');
-      await mostrarCustomAlert(
-        'Nenhum veículo foi selecionado no carrinho!\n\n' +
-        'Adicione veículos clicando em "Simular compra" nos cards.',
-        'warning',
-        'Pedido Vazio'
-      );
-      return;
-    }
-
-    // Fecha o modal do carrinho para exibir o resumo do pedido
-    fecharCartModal();
-
-    const itens = Object.entries(carrinho.itens).map(([id, item]) => ({
-      nome: item.nome,
-      qtd: item.qtd,
-      preco: item.preco,
-      valor: item.qtd * item.preco
-    }));
-
-    const subtotal = carrinho.getSubtotal();
-    const totalQtd = carrinho.getTotalQtd();
-    const temDesconto = totalQtd >= DESCONTO_MIN_UNIDADES;
-    const valorDesconto = temDesconto ? subtotal * DESCONTO_PERCENTUAL : 0;
-    const total = subtotal - valorDesconto;
-
-    // Monta mensagem resumida (requisito: alert com itens e total)
-    let mensagemAlert = '';
-    itens.forEach(item => {
-      mensagemAlert += `🏎️ ${item.nome} (${item.qtd}x) — ${formatarMoeda(item.valor)}\n`;
-    });
-
-    mensagemAlert += '─────────────────────────────\n';
-    if (temDesconto) {
-      mensagemAlert += `Subtotal: ${formatarMoeda(subtotal)}\n`;
-      mensagemAlert += `Desconto (5%): -${formatarMoeda(valorDesconto)}\n`;
-      mensagemAlert += '─────────────────────────────\n';
-    }
-    mensagemAlert += `TOTAL: ${formatarMoeda(total)}\n\n`;
-    if (temDesconto) mensagemAlert += '🎁 Desconto de 5% aplicado!\n';
-    mensagemAlert += 'Nossa equipe entrará em contato em breve.';
-
-    // Exibe alert (conforme requisito do desafio)
-    await mostrarCustomAlert(mensagemAlert, 'success', 'Resumo da Compra');
-
-    // Também abre o modal customizado
-    exibirModal(itens, subtotal, total, valorDesconto, temDesconto);
-
-  } catch (erro) {
-    console.error('Erro ao simular compra:', erro);
-    exibirToast('Ocorreu um erro inesperado. Por favor, tente novamente.', 'error');
+  if (!carrinho.temItens()) {
+    await mostrarCustomAlert(
+      'Nenhum veículo foi selecionado. Escolha um produto no catálogo para começar.',
+      'info',
+      'Pedido vazio'
+    );
+    return;
   }
+
+  const itens = Object.entries(carrinho.itens).map(([id, item]) => ({
+    id,
+    nome: item.nome,
+    quantidade: item.qtd,
+    valor: item.qtd * item.preco
+  }));
+
+  const subtotal = carrinho.getSubtotal();
+  const desconto = carrinho.getDesconto();
+  const total = carrinho.getTotal();
+
+  let mensagem = 'RESUMO DA COMPRA\n\n';
+  itens.forEach(item => {
+    mensagem += `${item.nome}\n`;
+    mensagem += `Quantidade: ${item.quantidade}\n`;
+    mensagem += `Valor: ${formatarMoeda(item.valor)}\n\n`;
+  });
+  mensagem += '----------------------------\n';
+  if (desconto > 0) {
+    mensagem += `Subtotal: ${formatarMoeda(subtotal)}\n`;
+    mensagem += `Desconto (5%): - ${formatarMoeda(desconto)}\n`;
+    mensagem += '----------------------------\n';
+  }
+  mensagem += `TOTAL DA COMPRA: ${formatarMoeda(total)}`;
+
+  fecharCartModal();
+  await mostrarCustomAlert(mensagem, 'success', 'Resumo da compra');
 }
 
 /**
@@ -875,7 +769,10 @@ function mostrarCustomAlert(mensagem, tipo = 'info', titulo = '') {
       warning: 'Atenção'
     };
 
-    if (icon) icon.innerHTML = icons[tipo] || icons.info;
+    if (icon) {
+      icon.className = `modal-icon ${tipo}`;
+      icon.innerHTML = icons[tipo] || icons.info;
+    }
     if (title) title.textContent = titulo || titles[tipo] || 'AutoElite';
     if (body) body.innerHTML = `<p>${escaparHTML(mensagem).replace(/\n/g, '<br>')}</p>`;
 

@@ -5,9 +5,11 @@
 **Trilha:** Trilha de Desenvolvimento Mobile  
 **Entrega:** 30/10/2026
 
-Loja fictícia de veículos premium desenvolvida com HTML, CSS e JavaScript puro. O projeto apresenta um catálogo de carros de alto padrão, permite simular a compra informando quantidades, calcula o total com desconto progressivo e exibe um resumo do pedido — tudo em uma interface responsiva, com tema claro/escuro e formulário de contato validado.
+Loja fictícia de veículos premium desenvolvida com **HTML, CSS e JavaScript puro**. O site apresenta um catálogo de carros de alto padrão, permite simular a compra escolhendo o veículo e a quantidade, calcula os valores, aplica desconto progressivo e exibe o resumo do pedido em modais com a identidade visual da loja.
 
 ![Captura de tela da AutoElite](assets/screenshot.png)
+
+> **Aviso:** esta é uma loja fictícia, criada exclusivamente para fins educacionais. Nenhuma compra real é realizada.
 
 ---
 
@@ -29,18 +31,16 @@ Loja fictícia de veículos premium desenvolvida com HTML, CSS e JavaScript puro
 
 ## Sobre a loja
 
-A **AutoElite** é uma loja fictícia especializada em veículos premium. A proposta da interface é transmitir sofisticação e exclusividade, com uma identidade visual escura, detalhes dourados e tipografia moderna.
+A **AutoElite** é uma loja fictícia especializada em veículos premium. A interface foi construída para transmitir sofisticação e exclusividade, com tema escuro, detalhes dourados, tipografia moderna e layout responsivo.
 
 A página reúne:
 
 - Apresentação da loja com chamada para o catálogo;
 - Catálogo com 6 veículos, descrições curtas, especificações e preços;
 - Seção “Como Funciona” com o passo a passo da simulação;
-- Carrinho/resumo do pedido com desconto progressivo;
+- Carrinho com contador flutuante e resumo detalhado;
 - Formulário de contato com validação completa;
 - Rodapé com informações institucionais e créditos.
-
-> **Aviso:** esta é uma loja fictícia, criada exclusivamente para fins educacionais. Nenhuma compra real é realizada.
 
 ---
 
@@ -55,27 +55,30 @@ A página reúne:
 | McLaren 720S | Superesportivo | 720 cv · 341 km/h · Gasolina | R$ 2.100.000 |
 | Tesla Model S Plaid | Elétrico | 1.020 cv · 322 km/h · Elétrico | R$ 890.000 |
 
-Os preços exibidos no HTML são os mesmos utilizados pelo JavaScript no cálculo da compra.
+Os preços exibidos no HTML são exatamente os mesmos definidos no objeto `PRODUTOS` em `assets/js/script.js`.
 
 ### Regras de negócio
 
-- Quantidade máxima de **10 unidades por modelo**;
-- **Desconto de 5%** quando o pedido tiver **3 ou mais veículos** no total (somando as unidades de todos os modelos);
+- O usuário escolhe livremente qual veículo simular, clicando no botão do card correspondente;
+- Cada simulação aceita de `0` a `10` unidades do modelo escolhido;
+- Ao simular o mesmo modelo novamente, as quantidades são somadas no carrinho;
 - Quantidade `0` significa que o veículo não será incluído no pedido;
+- **Desconto de 5%** quando o pedido tiver **3 ou mais veículos** no total (somando as unidades de todos os modelos);
 - Se nenhum veículo for selecionado, o sistema informa que o pedido está vazio.
 
 ---
 
 ## Funcionalidades
 
-### Catálogo e simulação
+### Simulação e carrinho
 
 - Cards de produto com imagem, descrição, especificações e preço;
-- Botão **“Simular compra”** em cada card, que solicita a quantidade desejada;
+- Botão **“Simular compra”** em cada card, que abre um modal customizado para escolher a quantidade daquele veículo;
+- Cálculo de `preço × quantidade` e exibição do resultado em modal estilizado;
 - Carrinho com contador flutuante e resumo detalhado;
-- Cálculo de subtotal, desconto e total em tempo real;
+- Cálculo de subtotal, desconto de 5% e total;
 - Possibilidade de limpar o carrinho ou finalizar o pedido;
-- Modal de resumo com itens, quantidades, valores, desconto e total.
+- Resumo final com itens, quantidades, valores, desconto e total.
 
 ### Experiência do usuário
 
@@ -84,7 +87,8 @@ Os preços exibidos no HTML são os mesmos utilizados pelo JavaScript no cálcul
 - Menu hamburger no mobile;
 - Animações de entrada com `IntersectionObserver`;
 - Notificações do tipo *toast* para feedback das ações;
-- Modais customizados para alertas e prompts, com suporte a teclado (`Enter`/`Esc`);
+- Modais customizados em CSS para quantidade, alertas e resumo do pedido;
+- Suporte a teclado (`Enter` e `Esc`) nos modais;
 - Scroll suave entre as seções.
 
 ### Formulário de contato
@@ -101,21 +105,22 @@ Os preços exibidos no HTML são os mesmos utilizados pelo JavaScript no cálcul
 - Sanitização de textos de entrada (remoção de caracteres de controle e espaços extras);
 - Escape de HTML antes de inserir conteúdo dinâmico no DOM, prevenindo XSS;
 - Validação de tipos e limites numéricos no simulador;
-- Tratamento de erros com `try/catch` nas principais operações.
+- Tratamento de erros com `try/catch` nas principais operações;
+- Acesso ao `localStorage` protegido, para o site continuar funcionando mesmo quando o armazenamento está bloqueado.
 
 ---
 
 ## Como funciona a simulação
 
-1. O usuário clica em **“Simular compra”** em um dos veículos.
-2. Um modal solicita a quantidade desejada (de `0` a `10`).
-3. A quantidade é convertida para número e validada.
-4. O veículo é adicionado ao carrinho, que abre automaticamente.
-5. O resumo exibe subtotal, desconto (se houver) e total.
-6. Ao clicar em **“Finalizar Pedido”**, o sistema valida o carrinho e apresenta o resumo final da compra.
-7. O usuário pode entrar em contato pelo formulário para concluir a negociação.
+1. O usuário clica em **“Simular compra”** no veículo que deseja — a escolha é livre.
+2. Um modal customizado (`mostrarCustomPrompt`) solicita a quantidade daquele veículo, de `0` a `10`.
+3. O valor é convertido em número com `Number()` e validado.
+4. O sistema calcula `preço × quantidade` e adiciona o veículo ao carrinho.
+5. O resultado é exibido em um modal estilizado com CSS (`.modal--alert`), mostrando quantidade, valor e total do pedido.
+6. Se a quantidade for `0`, o sistema informa que nada foi selecionado para aquele veículo.
+7. Ao clicar em **“Finalizar Pedido”**, o resumo completo do carrinho é exibido no mesmo estilo customizado.
 
-> **Observação sobre o requisito do desafio:** a proposta original pedia `prompt()`, `Number()` e `alert()`. Neste projeto, essas interações foram implementadas com **modais customizados** para melhorar a experiência e a acessibilidade. A lógica exigida foi mantida: o sistema solicita a quantidade, converte o valor com `Number()`, calcula `preço × quantidade` e exibe o resumo com os itens e o total. A conversão e a validação numérica também aparecem em `lerSimulador()` e `mostrarCustomPrompt()`.
+> **Observação sobre o enunciado:** o desafio pedia `prompt()` e `alert()` nativos. Para preservar a identidade visual da loja, foram usados modais customizados equivalentes: o modal de quantidade faz o papel do `prompt()`, o valor é convertido com `Number()`, calcula-se `preço × quantidade` e o modal de resultado faz o papel do `alert()`, exibindo quantidade, valor e total. A lógica pedida foi mantida, assim como o tratamento de `0` e o aviso quando nada é selecionado.
 
 ---
 
@@ -142,12 +147,12 @@ Loja Desafio 1 Trilhas/
 ├── instrucoes.md               # Enunciado do desafio
 └── assets/
     ├── css/
-    │   └── style.css           # Estilos, temas e responsividade
+    │   └── style.css           # Estilos, temas, modais e responsividade
     ├── js/
     │   └── script.js           # Simulador, carrinho, validações e interações
     ├── img/
     │   ├── logo.png            # Logotipo da loja
-    │   ├── hero.jpg            # Imagem de fundo do hero
+    │   ├── hero.webp           # Imagem de fundo do hero
     │   ├── ferrari-f8-tributo.jpg
     │   ├── porsche-panamera.jpg
     │   ├── lamborghini-urus.webp
@@ -192,32 +197,37 @@ Depois acesse `http://localhost:8000`.
 
 ## Testes realizados
 
-Os testes foram executados manualmente nos navegadores Chrome e Edge, em resoluções de desktop e mobile.
+Os testes foram executados manualmente nos navegadores Chrome e Edge, em resoluções de desktop e mobile. O fluxo principal também foi validado com um teste automatizado usando um DOM simulado.
 
 | # | Cenário testado | Resultado esperado | Status |
 |---|---|---|---|
-| 1 | Adicionar 1 veículo ao carrinho | Item aparece no resumo com quantidade e valor corretos | ✅ |
-| 2 | Adicionar o mesmo veículo mais de uma vez | Quantidade é somada, respeitando o máximo de 10 | ✅ |
-| 3 | Pedido com 3 ou mais veículos | Desconto de 5% é aplicado sobre o subtotal | ✅ |
-| 4 | Pedido com menos de 3 veículos | Nenhum desconto é aplicado | ✅ |
-| 5 | Informar quantidade `0` | Veículo não é incluído no pedido | ✅ |
-| 6 | Informar texto, número negativo ou valor acima de 10 | Sistema exibe mensagem de validação e não adiciona o item | ✅ |
-| 7 | Finalizar pedido com carrinho vazio | Sistema informa que nenhum veículo foi selecionado | ✅ |
-| 8 | Limpar carrinho | Todos os itens são removidos e o contador volta a zero | ✅ |
-| 9 | Alternar tema claro/escuro | Tema muda e permanece após recarregar a página | ✅ |
-| 10 | Navegar pelo menu no celular | Menu hamburger abre, fecha e navega corretamente | ✅ |
-| 11 | Enviar formulário com campos vazios | Campos inválidos são destacados com mensagens de erro | ✅ |
-| 12 | Informar e-mail/telefone inválidos | Validação impede o envio e exibe mensagem específica | ✅ |
-| 13 | Não aceitar os Termos de Uso | Envio é bloqueado com aviso | ✅ |
-| 14 | Preencher o formulário corretamente | Mensagem de sucesso é exibida e o formulário é limpo | ✅ |
-| 15 | Digitar caracteres especiais/HTML no formulário | Conteúdo é sanitizado/escapado, sem execução de script | ✅ |
-| 16 | Redimensionar a janela | Layout se adapta sem quebra de elementos | ✅ |
+| 1 | Abrir a página | Layout carrega e o tema é aplicado | ✅ |
+| 2 | Clicar em “Simular compra” em um card | Modal customizado abre com nome e preço do veículo | ✅ |
+| 3 | Informar quantidade `2` | Valor calculado como `preço × quantidade` e exibido no modal | ✅ |
+| 4 | Informar quantidade `0` | Modal informa que nada foi selecionado para aquele veículo | ✅ |
+| 5 | Simular veículos diferentes | Itens são somados no carrinho e o contador é atualizado | ✅ |
+| 6 | Pedido com 3 ou mais veículos | Desconto de 5% é aplicado sobre o subtotal | ✅ |
+| 7 | Pedido com menos de 3 veículos | Nenhum desconto é aplicado | ✅ |
+| 8 | Finalizar pedido com itens | Resumo completo é exibido em modal estilizado | ✅ |
+| 9 | Finalizar pedido com carrinho vazio | Sistema informa que nenhum veículo foi selecionado | ✅ |
+| 10 | Limpar carrinho | Itens removidos e contador volta a zero | ✅ |
+| 11 | Alternar tema claro/escuro | Tema muda e permanece após recarregar a página | ✅ |
+| 12 | Navegar pelo menu no celular | Menu hamburger abre, fecha e navega corretamente | ✅ |
+| 13 | Enviar formulário com campos vazios | Campos inválidos são destacados com mensagens de erro | ✅ |
+| 14 | Informar e-mail/telefone inválidos | Validação impede o envio e exibe mensagem específica | ✅ |
+| 15 | Não aceitar os Termos de Uso | Envio é bloqueado com aviso | ✅ |
+| 16 | Preencher o formulário corretamente | Mensagem de sucesso é exibida e o formulário é limpo | ✅ |
+| 17 | Digitar caracteres especiais/HTML no formulário | Conteúdo é sanitizado/escapado, sem execução de script | ✅ |
+| 18 | Redimensionar a janela | Layout se adapta sem quebra de elementos | ✅ |
+| 19 | Abrir com `localStorage` bloqueado | O script continua funcionando normalmente | ✅ |
 
 ### Verificações técnicas
 
-- Console do navegador sem erros durante a navegação e as simulações;
+- Sintaxe do JavaScript verificada com `node --check`;
+- Fluxo principal validado com teste automatizado (modal de quantidade → modal de resultado → carrinho);
 - Preços do HTML conferidos com os valores definidos em `PRODUTOS` no `assets/js/script.js`;
-- Cálculos conferidos manualmente, incluindo arredondamento e formatação em BRL;
+- Cálculos conferidos manualmente, incluindo desconto e formatação em BRL;
+- Console do navegador sem erros durante a navegação e as simulações;
 - Captura de tela gerada com o Chrome em modo headless (`assets/screenshot.png`).
 
 ---
@@ -226,9 +236,9 @@ Os testes foram executados manualmente nos navegadores Chrome e Edge, em resolu�
 
 ### Dificuldade encontrada
 
-Uma das principais dificuldades foi conciliar o requisito acadêmico de usar `prompt()` e `alert()` com a proposta de uma interface mais moderna e agradável. Os prompts nativos do navegador são limitados, não seguem o estilo da loja e podem prejudicar a experiência do usuário. A solução foi criar modais customizados que simulam o comportamento de `prompt` e `alert`, mantendo a mesma lógica de solicitar a quantidade, converter com `Number()`, calcular os valores e exibir o resumo.
+Uma das principais dificuldades foi conciliar a lógica de simulação com a identidade visual da loja. Os `prompt()` e `alert()` nativos do navegador não podem ser estilizados e obrigavam o usuário a passar por todos os produtos. Por isso, a interação passou a usar modais customizados em CSS: o usuário escolhe livremente o veículo no catálogo, informa a quantidade em uma janela estilizada e o resultado aparece no mesmo padrão visual.
 
-Outro ponto desafiador foi garantir que os valores e as validações ficassem consistentes entre o HTML, o carrinho e o simulador, além de tratar entradas inválidas sem quebrar a aplicação.
+Outro problema encontrado foi o acesso ao `localStorage`: quando o site é aberto diretamente como arquivo, o armazenamento pode lançar uma exceção e interromper todo o carregamento do JavaScript. A solução foi envolver esse acesso em `try/catch`, garantindo que o restante da página funcione mesmo sem persistência.
 
 ### O que aprendi
 
@@ -249,12 +259,13 @@ A Inteligência Artificial foi utilizada como **ferramenta de apoio** durante o 
 - Revisar e refatorar o código JavaScript;
 - Sugerir melhorias de acessibilidade, validação e segurança (sanitização e escape de HTML);
 - Auxiliar na organização visual e na responsividade;
+- Investigar o erro de `localStorage` que interrompia o carregamento;
 - Apoiar a criação e a revisão desta documentação;
 - Gerar a captura de tela do projeto para o README.
 
-**O que foi adaptado:** as sugestões foram analisadas e ajustadas ao contexto do desafio. Por exemplo, os modais customizados foram mantidos em vez de simplesmente substituir os requisitos por `prompt()`/`alert()`, e a lógica de desconto e os preços foram conferidos manualmente para garantir correspondência com o catálogo.
+**O que foi adaptado:** as sugestões foram analisadas e ajustadas ao contexto do desafio. A simulação permite que o usuário escolha livremente o veículo e usa modais customizados em CSS para a quantidade e para os alertas, respeitando a identidade visual da loja. A lógica pedida (perguntar quantidade, converter com `Number()`, calcular `preço × quantidade`, exibir quantidade/valor/total e tratar `0`) foi mantida. Os preços e a regra de desconto foram conferidos manualmente.
 
-**Como o resultado foi verificado:** o projeto foi executado no navegador, os fluxos de compra foram testados manualmente (inclusive entradas inválidas), os preços foram comparados entre HTML e JavaScript, o console foi inspecionado em busca de erros e os cálculos de desconto foram conferidos com valores conhecidos.
+**Como o resultado foi verificado:** o projeto foi executado no navegador, os fluxos de compra foram testados manualmente (inclusive entradas inválidas), os preços foram comparados entre HTML e JavaScript, o console foi inspecionado em busca de erros e o fluxo principal também foi validado com um teste automatizado.
 
 > Todo o código entregue foi lido e compreendido pelo aluno, que é responsável pela implementação e pelas adaptações realizadas.
 
