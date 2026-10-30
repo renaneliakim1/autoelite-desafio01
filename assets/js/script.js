@@ -1055,7 +1055,7 @@ const VALIDACOES_CONTATO = {
   'contact-email': {
     required: true,
     maxLength: 150,
-    pattern: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/,
+    pattern: /^[A-Za-z0-9]+(?:[._%+-][A-Za-z0-9]+)*@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/,
     mensagens: {
       required: 'Por favor, informe seu e-mail.',
       maxLength: 'O e-mail não pode ter mais de 150 caracteres.',
@@ -1064,10 +1064,10 @@ const VALIDACOES_CONTATO = {
   },
   'contact-phone': {
     required: true,
-    pattern: /^\(?\d{2}\)?\s?\d{4,5}[-\s]?\d{4}$/,
+    validator: validarTelefone,
     mensagens: {
       required: 'Por favor, informe seu telefone.',
-      pattern: 'Informe um telefone válido (ex: (11) 99999-9999).',
+      validator: 'Informe um telefone válido com DDD (ex: (11) 99999-9999).',
     },
   },
   'contact-interest': {
@@ -1089,6 +1089,31 @@ const VALIDACOES_CONTATO = {
     },
   },
 };
+
+/**
+ * Valida um telefone brasileiro: apenas dígitos, 10 ou 11 números
+ * (DDD + 8 ou 9 dígitos) e DDD entre 11 e 99.
+ * @param {string} valor
+ * @returns {boolean}
+ */
+function validarTelefone(valor) {
+  let digitos = String(valor ?? '').replace(/\D/g, '');
+
+  // Ignora o DDI 55 quando presente
+  if (digitos.length > 11 && digitos.startsWith('55')) {
+    digitos = digitos.slice(2);
+  }
+
+  if (!/^\d{10,11}$/.test(digitos)) return false;
+
+  const ddd = Number(digitos.slice(0, 2));
+  if (ddd < 11 || ddd > 99) return false;
+
+  // Celular (11 dígitos) deve começar com 9 após o DDD
+  if (digitos.length === 11 && digitos[2] !== '9') return false;
+
+  return true;
+}
 
 /**
  * Valida um campo do formulário de contato.
@@ -1116,6 +1141,8 @@ function validarCampoContato(campoId) {
       erro = regras.mensagens.opcoes;
     } else if (regras.pattern && !regras.pattern.test(valor)) {
       erro = regras.mensagens.pattern;
+    } else if (regras.validator && !regras.validator(valor)) {
+      erro = regras.mensagens.validator;
     }
   }
 
@@ -1145,18 +1172,55 @@ function validarTermos() {
 
 /**
  * Formata o campo telefone automaticamente enquanto digita.
+ * Aceita números com ou sem DDI (+55) e aplica a máscara (DD) 99999-9999.
  */
 function formatarTelefone(input) {
-  let val = input.value.replace(/\D/g, '');
-  if (val.length > 11) val = val.slice(0, 11);
+  let digitos = input.value.replace(/\D/g, '');
 
-  if (val.length <= 10) {
-    val = val.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-  } else {
-    val = val.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+  // Remove o DDI 55 quando o número vier com o código do país
+  if (digitos.length > 11 && digitos.startsWith('55')) {
+    digitos = digitos.slice(2);
+  }
+  if (digitos.length > 11) digitos = digitos.slice(0, 11);
+
+  if (digitos.length === 0) {
+    input.value = '';
+    return;
   }
 
-  input.value = val;
+  let formatado = `(${digitos.slice(0, 2)}`;
+  if (digitos.length >= 2) formatado += ')';
+
+  if (digitos.length > 2) {
+    const resto = digitos.slice(2);
+    const corte = digitos.length > 10 ? 5 : 4; // 11 dígitos = celular
+    formatado += ` ${resto.slice(0, corte)}`;
+    if (resto.length > corte) formatado += `-${resto.slice(corte)}`;
+  }
+
+  input.value = formatado;
+}
+
+/**
+ * Normaliza o e-mail: remove espaços e converte para minúsculas.
+ */
+function normalizarEmail(input) {
+  input.value = input.value.replace(/\s+/g, '').toLowerCase();
+}
+
+/**
+ * Aplica o tratamento específico do campo (máscara/normalização) e o valida.
+ * @param {string} campoId
+ * @returns {boolean}
+ */
+function tratarCampoContato(campoId) {
+  const campo = document.getElementById(campoId);
+  if (!campo) return true;
+
+  if (campoId === 'contact-phone') formatarTelefone(campo);
+  if (campoId === 'contact-email') normalizarEmail(campo);
+
+  return validarCampoContato(campoId);
 }
 
 function inicializarFormularioContato() {
@@ -1168,8 +1232,14 @@ function inicializarFormularioContato() {
     const campo = document.getElementById(campoId);
     if (!campo) return;
 
-    campo.addEventListener('blur', () => validarCampoContato(campoId));
+    campo.addEventListener('blur', () => tratarCampoContato(campoId));
     campo.addEventListener('input', () => {
+      // Trata o valor enquanto digita (telefone somente números / e-mail sem espaços)
+      if (campoId === 'contact-phone') formatarTelefone(campo);
+      if (campoId === 'contact-email') {
+        campo.value = campo.value.replace(/\s+/g, '');
+      }
+
       // Limpa erro ao começar a digitar
       const errorEl = document.getElementById(`error-${campoId}`);
       const valorAtual = sanitizarTexto(campo.value, campo.tagName === 'TEXTAREA');
@@ -1182,12 +1252,6 @@ function inicializarFormularioContato() {
       }
     });
   });
-
-  // Formatação de telefone
-  const phoneInput = document.getElementById('contact-phone');
-  if (phoneInput) {
-    phoneInput.addEventListener('input', () => formatarTelefone(phoneInput));
-  }
 
   // Contador de caracteres da mensagem
   const messageInput = document.getElementById('contact-message');
@@ -1244,6 +1308,10 @@ function enviarFormularioContato() {
     Object.keys(VALIDACOES_CONTATO).forEach(campoId => {
       const campo = document.getElementById(campoId);
       if (!campo) return;
+
+      if (campoId === 'contact-phone') formatarTelefone(campo);
+      if (campoId === 'contact-email') normalizarEmail(campo);
+
       campo.value = sanitizarTexto(campo.value, campo.tagName === 'TEXTAREA');
     });
 
